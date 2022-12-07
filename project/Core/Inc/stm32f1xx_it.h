@@ -63,7 +63,7 @@ void CAN1_SCE_IRQHandler(void);
 void USART2_IRQHandler(void);
 void TIM6_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
+void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart);
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

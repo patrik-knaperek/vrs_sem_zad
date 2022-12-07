@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "xsense.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,7 +46,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern UART_HandleTypeDef huart2;
+extern DMA_HandleTypeDef hdma_usart2_rx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,6 +95,11 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   MX_NVIC_Init();
+
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);										// enable idle line interrupt
+    __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT); 								// disable half complete interrupt
+    HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);			// start receiving data
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
