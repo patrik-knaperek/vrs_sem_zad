@@ -26,7 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "CAN2022.h"
+#include "xsense.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,18 +47,48 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+CAN_FilterTypeDef sFilterConfig;
+uint8_t sgt_CAN_busy = 0;
+uint8_t IMU_data_ready = 0;
 
+extern CAN_HandleTypeDef hcan1;
+extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
+extern MCU_IMU_acceleration_TypeDef MCU_IMU_acceleration_Data;
+extern MCU_IMU_euler_angles_TypeDef MCU_IMU_euler_angles_Data;
+extern MCU_IMU_gps_speed_TypeDef MCU_IMU_gps_speed_Data;
+extern struct XDI_RateOfTurnDataType XDI_RateOfTurn;
+extern struct XDI_AccelerationDataType XDI_Acceleration;
+extern struct XDI_EulerAnglesDataType XDI_EulerAngles;
+extern struct XDI_VelocityDataType XDI_Velocity;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+void send_sgt_CAN(void);
 static void MX_NVIC_Init(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void initCanFilter(void)
+{
+	sFilterConfig.FilterBank = 0;
+	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+	sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+	sFilterConfig.FilterIdHigh = 0x0000;
+	sFilterConfig.FilterIdLow = 0x0000;
+	sFilterConfig.FilterMaskIdHigh = 0x0000;
+	sFilterConfig.FilterMaskIdLow = 0x0000;
+	sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+	sFilterConfig.FilterActivation = ENABLE;
+	sFilterConfig.SlaveStartFilterBank = 14;
 
+	if (HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -94,12 +125,25 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   MX_NVIC_Init();
+
+  initCanFilter();
+  HAL_CAN_Start(&hcan1);
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+  __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);// enable idle line interrupt
+  __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT); // disable half complete interrupt
+  HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(IMU_data_ready)
+	  {
+		  send_sgt_CAN();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -155,6 +199,46 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void set_MCU_IMU_data(void)
+{
+	MCU_IMU_angular_velocity_Data.gyrX = XDI_RateOfTurn.gyrX * 100;
+	MCU_IMU_angular_velocity_Data.gyrY = XDI_RateOfTurn.gyrY * 100;
+	MCU_IMU_angular_velocity_Data.gyrZ = XDI_RateOfTurn.gyrZ * 100;
+
+	MCU_IMU_acceleration_Data.accX = XDI_Acceleration.accx * 1000;
+	MCU_IMU_acceleration_Data.accY = XDI_Acceleration.accy * 1000;
+	MCU_IMU_acceleration_Data.accZ = XDI_Acceleration.accz * 1000;
+
+	MCU_IMU_euler_angles_Data.pitch = XDI_EulerAngles.pitch * 100;
+	MCU_IMU_euler_angles_Data.roll = XDI_EulerAngles.roll * 100;
+	MCU_IMU_euler_angles_Data.yaw = XDI_EulerAngles.yaw * 100;
+
+	//MCU_IMU_gps_position_Data.lat = XDI_GPSPosition.latitude;
+	//MCU_IMU_gps_position_Data.longitude = XDI_GPSPosition.longitude;
+	MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
+
+	IMU_data_ready = 1;
+}
+
+void send_sgt_CAN(void)
+{
+	sgt_CAN_busy = 1;
+
+	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
+	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
+	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
+	//Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
+	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
+
+	IMU_data_ready = 0;
+	sgt_CAN_busy = 0;
+}
+
+uint8_t is_sgt_CAN_busy()
+{
+	return sgt_CAN_busy;
+}
 
 /** NVIC Configuration
  */

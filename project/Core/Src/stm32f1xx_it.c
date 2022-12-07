@@ -281,7 +281,18 @@ void USART2_IRQHandler(void)
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
+  uint32_t tmp_flag;
+  uint32_t tmp_it_source;
 
+  /* UART RX Idle interrupt --------------------------------------------*/
+  tmp_flag = __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE);
+  tmp_it_source = __HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_IDLE);
+
+  if((tmp_flag != RESET) && (tmp_it_source != RESET))
+  {
+	  __HAL_UART_CLEAR_IDLEFLAG(&huart2);
+	  HAL_UART_RxIdleCallback(&huart2);
+  }
   /* USER CODE END USART2_IRQn 1 */
 }
 
@@ -300,5 +311,18 @@ void TIM6_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+/**
+* @brief Rx idle callback.
+* @param huart: Pointer to a UART_HandleTypeDef structure that contains
+* the configuration information for the specified UART module.
+* @retval None
+*/
+__weak void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
+{
+/* Prevent unused argument(s) compilation warning */
+	UNUSED(huart);
+	/* NOTE: This function should not be modified, when the callback is needed,
+ 		 the HAL_UART_RxIdleCallback can be implemented in the user file
+	*/
+}
 /* USER CODE END 1 */
