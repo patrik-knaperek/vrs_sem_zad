@@ -57,6 +57,7 @@ extern CAN_HandleTypeDef hcan1;
 extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
 extern MCU_IMU_acceleration_TypeDef MCU_IMU_acceleration_Data;
 extern MCU_IMU_euler_angles_TypeDef MCU_IMU_euler_angles_Data;
+extern MCU_IMU_gps_position_TypeDef MCU_IMU_gps_position_Data;
 extern MCU_IMU_gps_speed_TypeDef MCU_IMU_gps_speed_Data;
 extern struct XDI_RateOfTurnDataType XDI_RateOfTurn;
 extern struct XDI_AccelerationDataType XDI_Acceleration;
@@ -217,8 +218,10 @@ void set_MCU_IMU_data(void)
 	MCU_IMU_euler_angles_Data.yaw = XDI_EulerAngles.yaw * 100;
 
 	//MCU_IMU_gps_position_Data.lat = XDI_GPSPosition.latitude;
+	MCU_IMU_gps_position_Data.lat = 10;
 	//MCU_IMU_gps_position_Data.longitude = XDI_GPSPosition.longitude;
-	MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
+	//MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
+	MCU_IMU_gps_speed_Data.gps_velocity = 0;
 
 	IMU_data_ready = 1;
 }
@@ -232,7 +235,8 @@ void send_sgt_CAN(void)
 	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
 	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
 	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
-	//Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
+	HAL_Delay(0.1);
+	Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
 	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
 
 	IMU_data_ready = 0;
