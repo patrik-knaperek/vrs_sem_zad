@@ -17,23 +17,45 @@ extern uint8_t XSENSE_rx_buffer[XSENSE_rx_buffer_size];
 /*  ------------------------------------------------------------*/
 // XDI_TemperatureGroup		  	0x08x0
 #define	DID_Temperature			0x0810			// °C
-extern struct XDI_TemperatureDataType XDI_Temperature;
+struct XDI_TemperatureDataType
+{
+	float temp;
+};
 
 /* -------------------------------------------------------------*/
 /* 		NAME					DATA_ID			  Unit			*/
 /*  ------------------------------------------------------------*/
 // XDI_TimestampGroup		  	0x10x0
 #define DID_UtcTime				0x1010			// N/A
-extern struct XDI_UtcTimeDataType XDI_UtcTime;
+struct XDI_UtcTimeDataType
+{
+	uint32_t ns;
+	uint16_t year;
+	uint8_t month;
+	uint8_t day;
+	uint8_t hour;
+	uint8_t minute;
+	uint8_t second;
+	uint8_t flags;
+};
 
 #define	DID_PacketCounter		0x1020			// N/A
-extern struct XDI_PacketCounterDataType XDI_PacketCounter;
+struct XDI_PacketCounterDataType
+{
+	uint16_t PacketCounter;
+};
 
 #define	DID_SampleTimeFine		0x1060			// N/A
-extern struct XDI_SampleTimeFineDataType XDI_SampleTimeFine;
+struct XDI_SampleTimeFineDataType
+{
+	uint32_t SampleTimeFine;
+};
 
 #define DID_SampleTimeCoarse 	0x1070			// s
-extern struct XDI_SampleTimeCoarseDataType XDI_SampleTimeCoarse;
+struct XDI_SampleTimeCoarseDataType
+{
+	uint32_t SampleTimeCoarse;
+};
 
 /* -------------------------------------------------------------*/
 /* 		NAME					DATA_ID			  Unit			*/
@@ -49,10 +71,26 @@ typedef struct XDI_QuaternionDataType
 }XDI_Quaternion;
 
 #define	DID_RotationMatrix		0x2020			// N/A
-extern struct XDI_RotationMatrixDataType XDI_RotationMatrix;
+struct XDI_RotationMatrixDataType
+{
+	float a;
+	float b;
+	float c;
+	float d;
+	float e;
+	float f;
+	float g;
+	float h;
+	float i;
+};
 
 #define DID_EulerAngles			0x2030			// deg
-extern struct XDI_EulerAnglesDataType XDI_EulerAngles;
+struct XDI_EulerAnglesDataType
+{
+	float roll;
+	float pitch;
+	float yaw;
+};
 
 /* -------------------------------------------------------------*/
 /* 		NAME					DATA_ID			  Unit			*/
@@ -66,7 +104,12 @@ extern struct XDI_EulerAnglesDataType XDI_EulerAngles;
 // XDI_AccelerationGroup	  	0x40xy
 #define	DID_DeltaV				0x4010			// m/s
 #define	DID_Acceleration		0x4020			// m/s^2
-extern struct XDI_AccelerationDataType XDI_Acceleration;
+struct XDI_AccelerationDataType
+{
+	float accx;
+	float accy;
+	float accz;
+};
 
 #define	DID_FreeAcceleration	0x4030			// m/s^2
 #define	DID_AccelerationHR		0x4040			// m/s^2
@@ -78,7 +121,11 @@ extern struct XDI_AccelerationDataType XDI_Acceleration;
 #define DID_AltitudeEllipsoid	0x5020			// m
 #define DID_PositionEcef		0x5030			// m
 #define DID_LatLon				0x5040			// m
-extern struct XDI_GPSPositionDataType XDI_GPSPosition;
+struct XDI_GPSPositionDataType
+{
+	float latitude;
+	float longitude;
+};
 
 /* -------------------------------------------------------------*/
 /* 		NAME					DATA_ID			  Unit			*/
@@ -93,7 +140,12 @@ extern struct XDI_GPSPositionDataType XDI_GPSPosition;
 /*  ------------------------------------------------------------*/
 // XDI_AngularVelocityGroup	  	0x80xy
 #define	DID_RateOfTurn			0x8020			// rad/s
-extern struct XDI_RateOfTurnDataType XDI_RateOfTurn;
+struct XDI_RateOfTurnDataType
+{
+	float gyrX;
+	float gyrY;
+	float gyrZ;
+};
 
 #define	DID_DeltaQ				0x8030			// N/A
 #define	DID_RateOfTurnHR		0x8040			// rad/s
@@ -116,7 +168,13 @@ extern struct XDI_RateOfTurnDataType XDI_RateOfTurn;
 /*  ------------------------------------------------------------*/
 // XDI_VelocityGroup 		  	0xD0xy
 #define DID_VelocityXYZ			0xD010			// m/s
-extern struct XDI_VelocityDataType XDI_Velocity;
+struct XDI_VelocityDataType
+{
+	float velX;
+	float velY;
+	float velZ;
+	float velSum;
+};
 
 /* -------------------------------------------------------------*/
 /* 		NAME					DATA_ID			  Unit			*/

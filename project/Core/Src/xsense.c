@@ -6,91 +6,23 @@
 #include "CAN2022.h"
 #include "math.h"
 
-void send_sgt_CAN(void);
+//void send_sgt_CAN(void);
 
 /* Variables -----------------------------------------------------------------*/
 
 uint8_t XSENSE_rx_buffer[XSENSE_rx_buffer_size];
 
-struct XDI_TemperatureDataType
-{
-	float temp;
-} XDI_Temperature;
-
-struct XDI_UtcTimeDataType
-{
-	uint32_t ns;
-	uint16_t year;
-	uint8_t month;
-	uint8_t day;
-	uint8_t hour;
-	uint8_t minute;
-	uint8_t second;
-	uint8_t flags;
-} XDI_UtcTime;
-
-struct XDI_PacketCounterDataType
-{
-	uint16_t PacketCounter;
-} XDI_PacketCounter;
-
-struct XDI_SampleTimeFineDataType
-{
-	uint32_t SampleTimeFine;
-} XDI_SampleTimeFine;
-
-struct XDI_SampleTimeCoarseDataType
-{
-	uint32_t SampleTimeCoarse;
-} XDI_SampleTimeCoarse;
-
-struct XDI_RotationMatrixDataType
-{
-	float a;
-	float b;
-	float c;
-	float d;
-	float e;
-	float f;
-	float g;
-	float h;
-	float i;
-} XDI_RotationMatrix;
-
-struct XDI_EulerAnglesDataType
-{
-	float roll;
-	float pitch;
-	float yaw;
-} XDI_EulerAngles;
-
-struct XDI_AccelerationDataType
-{
-	float accx;
-	float accy;
-	float accz;
-} XDI_Acceleration;
-
-struct XDI_GPSPositionDataType
-{
-	float latitude;
-	float longitude;
-} XDI_GPSPosition;
-
-struct XDI_RateOfTurnDataType
-{
-	float gyrX;
-	float gyrY;
-	float gyrZ;
-} XDI_RateOfTurn;
-
-struct XDI_VelocityDataType
-{
-	float velX;
-	float velY;
-	float velZ;
-	float velSum;
-} XDI_Velocity;
+struct XDI_TemperatureDataType XDI_Temperature;
+struct XDI_UtcTimeDataType XDI_UtcTime;
+struct XDI_PacketCounterDataType XDI_PacketCounter;
+struct XDI_SampleTimeFineDataType XDI_SampleTimeFine;
+struct XDI_SampleTimeCoarseDataType XDI_SampleTimeCoarse;
+struct XDI_RotationMatrixDataType XDI_RotationMatrix;
+struct XDI_EulerAnglesDataType XDI_EulerAngles;
+struct XDI_AccelerationDataType XDI_Acceleration;
+struct XDI_GPSPositionDataType XDI_GPSPosition;
+struct XDI_RateOfTurnDataType XDI_RateOfTurn;
+struct XDI_VelocityDataType XDI_Velocity;
 
 extern CAN_HandleTypeDef hcan1;
 extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
@@ -110,6 +42,9 @@ extern MCU_IMU_gps_speed_TypeDef MCU_IMU_gps_speed_Data;
 
 void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 {
+	if(is_sgt_CAN_busy())
+		return;
+
 	/* DMA restart */
 	DMA_HandleTypeDef *hdma = huart->hdmarx;
 	__HAL_DMA_DISABLE(hdma);									// Disable the channel
@@ -416,33 +351,6 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 		msg_counter++;
 	}
 
-	send_sgt_CAN();
+	set_MCU_IMU_data();
 	HAL_UART_Receive_DMA(huart,XSENSE_rx_buffer,XSENSE_rx_buffer_size);		// enable DMA Rx cplt interrupt		// na test iba tx complete IT
-
-}
-
-# warning delete this and put it somewhere elseee
-void send_sgt_CAN(void){
-
-	MCU_IMU_angular_velocity_Data.gyrX = XDI_RateOfTurn.gyrX * 100;
-	MCU_IMU_angular_velocity_Data.gyrY = XDI_RateOfTurn.gyrY * 100;
-	MCU_IMU_angular_velocity_Data.gyrZ = XDI_RateOfTurn.gyrZ * 100;
-
-	MCU_IMU_acceleration_Data.accX = XDI_Acceleration.accx * 1000;
-	MCU_IMU_acceleration_Data.accY = XDI_Acceleration.accy * 1000;
-	MCU_IMU_acceleration_Data.accZ = XDI_Acceleration.accz * 1000;
-
-	MCU_IMU_euler_angles_Data.pitch = XDI_EulerAngles.pitch * 100;
-	MCU_IMU_euler_angles_Data.roll = XDI_EulerAngles.roll * 100;
-	MCU_IMU_euler_angles_Data.yaw = XDI_EulerAngles.yaw * 100;
-
-	//MCU_IMU_gps_position_Data.lat = XDI_GPSPosition.latitude;
-	//MCU_IMU_gps_position_Data.longitude = XDI_GPSPosition.longitude;
-	MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
-
-	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
-	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
-	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
-	//Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
-	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
 }
