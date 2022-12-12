@@ -55,7 +55,7 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 	hdma->Instance->CCR |= DMA_CCR_EN;            				// Start DMA transfer
 
 	/* Variables */
-	static uint8_t msg_counter;
+	static uint8_t USART_Rx_msg_counter;
 	uint16_t buff_indx = 0;
 
 	struct XsenseDataType
@@ -341,14 +341,14 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 
 
 	/* Blink IMU LED every 10 received messages */
-	if (msg_counter > 10)
+	if (USART_Rx_msg_counter > 10)
 	{
-		msg_counter = 0;
+		USART_Rx_msg_counter = 0;
 		HAL_GPIO_TogglePin(USART_RX_L_GPIO_Port, USART_RX_L_Pin);
 	}
 	else
 	{
-		msg_counter++;
+		USART_Rx_msg_counter++;
 	}
 
 	set_MCU_IMU_data();

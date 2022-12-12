@@ -225,6 +225,8 @@ void set_MCU_IMU_data(void)
 
 void send_sgt_CAN(void)
 {
+	static uint8_t CAN_Tx_msg_counter;
+
 	sgt_CAN_busy = 1;
 
 	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
@@ -235,6 +237,17 @@ void send_sgt_CAN(void)
 
 	IMU_data_ready = 0;
 	sgt_CAN_busy = 0;
+
+	/* Blink IMU LED every 10 received messages */
+	if (CAN_Tx_msg_counter > 10)
+	{
+		CAN_Tx_msg_counter = 0;
+		HAL_GPIO_TogglePin(CAN_TX_L_GPIO_Port, CAN_TX_L_Pin);
+	}
+	else
+	{
+		CAN_Tx_msg_counter++;
+	}
 }
 
 uint8_t is_sgt_CAN_busy()
