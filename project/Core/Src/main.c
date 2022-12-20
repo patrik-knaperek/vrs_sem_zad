@@ -49,10 +49,13 @@
 /* USER CODE BEGIN PV */
 extern UART_HandleTypeDef huart2;
 extern DMA_HandleTypeDef hdma_usart2_rx;
+extern TIM_HandleTypeDef htim6;
 CAN_FilterTypeDef sFilterConfig;
 uint8_t sgt_CAN_busy = 0;
 uint8_t IMU_data_ready = 0;
 uint8_t set_parameters = 0;
+struct CAN_Msg_Count CAN_msgs_counter;
+struct CAN_Msg_Count CAN_msgs_sampler;
 
 extern CAN_HandleTypeDef hcan1;
 extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
@@ -139,6 +142,7 @@ int main(void)
   __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT); 						// disable half complete interrupt
   HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);	// start receiving data
 
+  //HAL_TIM_Base_MspInit(&htim6);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -240,11 +244,16 @@ void send_sgt_CAN(void)
 	sgt_CAN_busy = 1;
 
 	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
+	CAN_msgs_counter.TxMsgId_0x260++;
 	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
+	CAN_msgs_counter.TxMsgId_0x270++;
 	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
+	CAN_msgs_counter.TxMsgId_0x280++;
 	HAL_Delay(0.1);
 	Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
+	CAN_msgs_counter.TxMsgId_0x300++;
 	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
+	CAN_msgs_counter.TxMsgId_0x305++;
 
 	IMU_data_ready = 0;
 	sgt_CAN_busy = 0;
@@ -302,6 +311,26 @@ void USART_ReInit(void)
     //HAL_Delay(1000);
 	set_parameters = 0;
 	return;
+}
+
+void reset_CAN_msgs_counter()
+{
+	CAN_msgs_sampler.TxMsgId_0x260 = CAN_msgs_counter.TxMsgId_0x260;
+	CAN_msgs_counter.TxMsgId_0x260 = 0;
+
+	CAN_msgs_sampler.TxMsgId_0x270 = CAN_msgs_counter.TxMsgId_0x260;
+	CAN_msgs_counter.TxMsgId_0x260 = 0;
+
+	CAN_msgs_sampler.TxMsgId_0x280 = CAN_msgs_counter.TxMsgId_0x260;
+	CAN_msgs_counter.TxMsgId_0x260 = 0;
+
+	CAN_msgs_sampler.TxMsgId_0x300 = CAN_msgs_counter.TxMsgId_0x260;
+	CAN_msgs_counter.TxMsgId_0x260 = 0;
+
+	CAN_msgs_sampler.TxMsgId_0x305 = CAN_msgs_counter.TxMsgId_0x260;
+	CAN_msgs_counter.TxMsgId_0x260 = 0;
+
+
 }
 
 /** NVIC Configuration
