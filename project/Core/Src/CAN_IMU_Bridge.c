@@ -10,6 +10,7 @@
   */
 #include "stm32f1xx_hal.h"
 #include "CAN_IMU_Bridge.h"
+#include "main.h"
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
 uint8_t TxData[8];
@@ -20,17 +21,17 @@ struct CAN_Msg_Count CAN_msgs_sampler;
 
 void reset_CAN_msgs_counter()
 {
-	CAN_msgs_sampler.MID_20 = CAN_msgs_counter.MID_20;
-	CAN_msgs_counter.MID_20 = 0;
+	CAN_msgs_sampler.MID_020 = CAN_msgs_counter.MID_020;
+	CAN_msgs_counter.MID_020 = 0;
 
-	CAN_msgs_sampler.MID_60 = CAN_msgs_counter.MID_60;
-	CAN_msgs_counter.MID_60 = 0;
+	CAN_msgs_sampler.MID_060 = CAN_msgs_counter.MID_060;
+	CAN_msgs_counter.MID_060 = 0;
 
-	CAN_msgs_sampler.MID_70 = CAN_msgs_counter.MID_70;
-	CAN_msgs_counter.MID_70 = 0;
+	CAN_msgs_sampler.MID_070 = CAN_msgs_counter.MID_070;
+	CAN_msgs_counter.MID_070 = 0;
 
-	CAN_msgs_sampler.MID_90 = CAN_msgs_counter.MID_90;
-	CAN_msgs_counter.MID_90 = 0;
+	CAN_msgs_sampler.MID_090 = CAN_msgs_counter.MID_090;
+	CAN_msgs_counter.MID_090 = 0;
 
 	CAN_msgs_sampler.MID_100 = CAN_msgs_counter.MID_100;
 	CAN_msgs_counter.MID_100 = 0;
@@ -41,23 +42,8 @@ void reset_CAN_msgs_counter()
 	CAN_msgs_sampler.MID_130 = CAN_msgs_counter.MID_130;
 	CAN_msgs_counter.MID_130 = 0;
 
-	CAN_msgs_sampler.MID_184 = CAN_msgs_counter.MID_184;
-	CAN_msgs_counter.MID_184 = 0;
-
-	CAN_msgs_sampler.MID_185 = CAN_msgs_counter.MID_185;
-	CAN_msgs_counter.MID_185 = 0;
-
-	CAN_msgs_sampler.MID_188 = CAN_msgs_counter.MID_188;
-	CAN_msgs_counter.MID_188 = 0;
-
-	CAN_msgs_sampler.MID_189 = CAN_msgs_counter.MID_189;
-	CAN_msgs_counter.MID_189 = 0;
-
 	CAN_msgs_sampler.MID_200 = CAN_msgs_counter.MID_200;
 	CAN_msgs_counter.MID_200 = 0;
-
-	CAN_msgs_sampler.MID_210 = CAN_msgs_counter.MID_210;
-	CAN_msgs_counter.MID_210 = 0;
 
 	CAN_msgs_sampler.MID_220 = CAN_msgs_counter.MID_220;
 	CAN_msgs_counter.MID_220 = 0;
@@ -161,7 +147,7 @@ void Rx_INT_control_data_Data(CAN_HandleTypeDef* hcan, INT_control_data_TypeDef*
     INT_control_data_Data->susp_RL = (uint16_t)(((RxData[3]&0b11111) << 7) | ((RxData[4]&0b1111111111111) >> 1));
     INT_control_data_Data->reserved = (uint8_t)(((RxData[4]&0b1) << 7) | ((RxData[5]&0b111111111) >> 1));
 
-    CAN_msgs_counter.MID_20++;
+    CAN_msgs_counter.MID_020++;
 }
 #endif
 
@@ -238,7 +224,7 @@ void Rx_ACU_control_status_Data(CAN_HandleTypeDef* hcan, ACU_control_status_Type
     ACU_control_status_Data->IMD_RES = (uint16_t)(((RxData[1]&0b111) << 13) | ((RxData[2]&0b11111111111) << 5) | ((RxData[3]&0b1111111111111111111) >> 3));
     ACU_control_status_Data->IMD_ERROR = (uint8_t)((RxData[3]&0b111));
 
-    CAN_msgs_counter.MID_60++;
+    CAN_msgs_counter.MID_060++;
 }
 #endif
 
@@ -280,7 +266,7 @@ void Rx_ACU_TSBox_data_Data(CAN_HandleTypeDef* hcan, ACU_TSBox_data_TypeDef* ACU
     ACU_TSBox_data_Data->current = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
     ACU_TSBox_data_Data->voltage = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
 
-    CAN_msgs_counter.MID_70++;
+    CAN_msgs_counter.MID_070++;
 }
 #endif
 
@@ -334,7 +320,7 @@ void Rx_AMS_acuseg_voltage_Data(CAN_HandleTypeDef* hcan, AMS_acuseg_voltage_Type
     AMS_acuseg_voltage_Data->voltage6 = (uint8_t)((RxData[6]&0b11111111));
     AMS_acuseg_voltage_Data->voltage7 = (uint8_t)((RxData[7]&0b11111111));
 
-    CAN_msgs_counter.MID_90++;
+    CAN_msgs_counter.MID_090++;
 }
 #endif
 
@@ -483,190 +469,6 @@ void Rx_FCU_steercont_data_Data(CAN_HandleTypeDef* hcan, FCU_steercont_data_Type
 #endif
 
 
-#if defined(Tx_AMK_setpoints_FL) || defined(Rx_AMK_setpoints_FL)
-    AMK_setpoints_FL_TypeDef AMK_setpoints_FL_Data = {
-        .control = 0,
-        .target_velocity = 0,
-        .torque_positive_limit = 0,
-        .torque_negative_limit = 0
-     };
-#endif
-    
-#ifdef Tx_AMK_setpoints_FL
-void Tx_AMK_setpoints_FL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FL_TypeDef* AMK_setpoints_FL_Data)
-{
-    //hcan->pTxMsg = &CanTxMsg; historic
-    TxHeader.StdId = ID_AMK_setpoints_FL;
-    TxHeader.DLC = DLC_AMK_setpoints_FL;
-    TxHeader.ExtId = 0x0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-        
-    TxData[0] = (uint8_t)((AMK_setpoints_FL_Data->control >> 8)&0b11111111);
-    TxData[1] = (uint8_t)((AMK_setpoints_FL_Data->control)&0b1111111111111111);
-    TxData[2] = (uint8_t)((AMK_setpoints_FL_Data->target_velocity >> 8)&0b11111111);
-    TxData[3] = (uint8_t)((AMK_setpoints_FL_Data->target_velocity)&0b1111111111111111);
-    TxData[4] = (uint8_t)((AMK_setpoints_FL_Data->torque_positive_limit >> 8)&0b11111111);
-    TxData[5] = (uint8_t)((AMK_setpoints_FL_Data->torque_positive_limit)&0b1111111111111111);
-    TxData[6] = (uint8_t)((AMK_setpoints_FL_Data->torque_negative_limit >> 8)&0b11111111);
-    TxData[7] = (uint8_t)((AMK_setpoints_FL_Data->torque_negative_limit)&0b1111111111111111);
-                        
-   HAL_CAN_ActivateNotification(hcan,0xff);
-   HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-}
-#endif
-#ifdef Rx_AMK_setpoints_FL
-void Rx_AMK_setpoints_FL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FL_TypeDef* AMK_setpoints_FL_Data)
-{
-    AMK_setpoints_FL_Data->control = (uint16_t)(((RxData[0]&0b11111111) << 8) | (RxData[1]&0b1111111111111111));
-    AMK_setpoints_FL_Data->target_velocity = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
-    AMK_setpoints_FL_Data->torque_positive_limit = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
-    AMK_setpoints_FL_Data->torque_negative_limit = (int16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
-
-    CAN_msgs_counter.MID_184++;
-}
-#endif
-
-
-#if defined(Tx_AMK_setpoints_FR) || defined(Rx_AMK_setpoints_FR)
-    AMK_setpoints_FR_TypeDef AMK_setpoints_FR_Data = {
-        .control = 0,
-        .target_velocity = 0,
-        .torque_positive_limit = 0,
-        .torque_negative_limit = 0
-     };
-#endif
-    
-#ifdef Tx_AMK_setpoints_FR
-void Tx_AMK_setpoints_FR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FR_TypeDef* AMK_setpoints_FR_Data)
-{
-    //hcan->pTxMsg = &CanTxMsg; historic
-    TxHeader.StdId = ID_AMK_setpoints_FR;
-    TxHeader.DLC = DLC_AMK_setpoints_FR;
-    TxHeader.ExtId = 0x0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-        
-    TxData[0] = (uint8_t)((AMK_setpoints_FR_Data->control >> 8)&0b11111111);
-    TxData[1] = (uint8_t)((AMK_setpoints_FR_Data->control)&0b1111111111111111);
-    TxData[2] = (uint8_t)((AMK_setpoints_FR_Data->target_velocity >> 8)&0b11111111);
-    TxData[3] = (uint8_t)((AMK_setpoints_FR_Data->target_velocity)&0b1111111111111111);
-    TxData[4] = (uint8_t)((AMK_setpoints_FR_Data->torque_positive_limit >> 8)&0b11111111);
-    TxData[5] = (uint8_t)((AMK_setpoints_FR_Data->torque_positive_limit)&0b1111111111111111);
-    TxData[6] = (uint8_t)((AMK_setpoints_FR_Data->torque_negative_limit >> 8)&0b11111111);
-    TxData[7] = (uint8_t)((AMK_setpoints_FR_Data->torque_negative_limit)&0b1111111111111111);
-                        
-   HAL_CAN_ActivateNotification(hcan,0xff);
-   HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-}
-#endif
-#ifdef Rx_AMK_setpoints_FR
-void Rx_AMK_setpoints_FR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FR_TypeDef* AMK_setpoints_FR_Data)
-{
-    AMK_setpoints_FR_Data->control = (uint16_t)(((RxData[0]&0b11111111) << 8) | (RxData[1]&0b1111111111111111));
-    AMK_setpoints_FR_Data->target_velocity = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
-    AMK_setpoints_FR_Data->torque_positive_limit = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
-    AMK_setpoints_FR_Data->torque_negative_limit = (int16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
-
-    CAN_msgs_counter.MID_185++;
-}
-#endif
-
-
-#if defined(Tx_AMK_setpoints_RL) || defined(Rx_AMK_setpoints_RL)
-    AMK_setpoints_RL_TypeDef AMK_setpoints_RL_Data = {
-        .control = 0,
-        .target_velocity = 0,
-        .torque_positive_limit = 0,
-        .torque_negative_limit = 0
-     };
-#endif
-    
-#ifdef Tx_AMK_setpoints_RL
-void Tx_AMK_setpoints_RL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RL_TypeDef* AMK_setpoints_RL_Data)
-{
-    //hcan->pTxMsg = &CanTxMsg; historic
-    TxHeader.StdId = ID_AMK_setpoints_RL;
-    TxHeader.DLC = DLC_AMK_setpoints_RL;
-    TxHeader.ExtId = 0x0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-        
-    TxData[0] = (uint8_t)((AMK_setpoints_RL_Data->control >> 8)&0b11111111);
-    TxData[1] = (uint8_t)((AMK_setpoints_RL_Data->control)&0b1111111111111111);
-    TxData[2] = (uint8_t)((AMK_setpoints_RL_Data->target_velocity >> 8)&0b11111111);
-    TxData[3] = (uint8_t)((AMK_setpoints_RL_Data->target_velocity)&0b1111111111111111);
-    TxData[4] = (uint8_t)((AMK_setpoints_RL_Data->torque_positive_limit >> 8)&0b11111111);
-    TxData[5] = (uint8_t)((AMK_setpoints_RL_Data->torque_positive_limit)&0b1111111111111111);
-    TxData[6] = (uint8_t)((AMK_setpoints_RL_Data->torque_negative_limit >> 8)&0b11111111);
-    TxData[7] = (uint8_t)((AMK_setpoints_RL_Data->torque_negative_limit)&0b1111111111111111);
-                        
-   HAL_CAN_ActivateNotification(hcan,0xff);
-   HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-}
-#endif
-#ifdef Rx_AMK_setpoints_RL
-void Rx_AMK_setpoints_RL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RL_TypeDef* AMK_setpoints_RL_Data)
-{
-    AMK_setpoints_RL_Data->control = (uint16_t)(((RxData[0]&0b11111111) << 8) | (RxData[1]&0b1111111111111111));
-    AMK_setpoints_RL_Data->target_velocity = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
-    AMK_setpoints_RL_Data->torque_positive_limit = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
-    AMK_setpoints_RL_Data->torque_negative_limit = (int16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
-
-    CAN_msgs_counter.MID_188++;
-}
-#endif
-
-
-#if defined(Tx_AMK_setpoints_RR) || defined(Rx_AMK_setpoints_RR)
-    AMK_setpoints_RR_TypeDef AMK_setpoints_RR_Data = {
-        .control = 0,
-        .target_velocity = 0,
-        .torque_positive_limit = 0,
-        .torque_negative_limit = 0
-     };
-#endif
-    
-#ifdef Tx_AMK_setpoints_RR
-void Tx_AMK_setpoints_RR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RR_TypeDef* AMK_setpoints_RR_Data)
-{
-    //hcan->pTxMsg = &CanTxMsg; historic
-    TxHeader.StdId = ID_AMK_setpoints_RR;
-    TxHeader.DLC = DLC_AMK_setpoints_RR;
-    TxHeader.ExtId = 0x0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-        
-    TxData[0] = (uint8_t)((AMK_setpoints_RR_Data->control >> 8)&0b11111111);
-    TxData[1] = (uint8_t)((AMK_setpoints_RR_Data->control)&0b1111111111111111);
-    TxData[2] = (uint8_t)((AMK_setpoints_RR_Data->target_velocity >> 8)&0b11111111);
-    TxData[3] = (uint8_t)((AMK_setpoints_RR_Data->target_velocity)&0b1111111111111111);
-    TxData[4] = (uint8_t)((AMK_setpoints_RR_Data->torque_positive_limit >> 8)&0b11111111);
-    TxData[5] = (uint8_t)((AMK_setpoints_RR_Data->torque_positive_limit)&0b1111111111111111);
-    TxData[6] = (uint8_t)((AMK_setpoints_RR_Data->torque_negative_limit >> 8)&0b11111111);
-    TxData[7] = (uint8_t)((AMK_setpoints_RR_Data->torque_negative_limit)&0b1111111111111111);
-                        
-   HAL_CAN_ActivateNotification(hcan,0xff);
-   HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-}
-#endif
-#ifdef Rx_AMK_setpoints_RR
-void Rx_AMK_setpoints_RR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RR_TypeDef* AMK_setpoints_RR_Data)
-{
-    AMK_setpoints_RR_Data->control = (uint16_t)(((RxData[0]&0b11111111) << 8) | (RxData[1]&0b1111111111111111));
-    AMK_setpoints_RR_Data->target_velocity = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
-    AMK_setpoints_RR_Data->torque_positive_limit = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
-    AMK_setpoints_RR_Data->torque_negative_limit = (int16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
-
-    CAN_msgs_counter.MID_189++;
-}
-#endif
-
-
 #if defined(Tx_DSH_shutdown_status) || defined(Rx_DSH_shutdown_status)
     DSH_shutdown_status_TypeDef DSH_shutdown_status_Data = {
         .RTD = 0,
@@ -717,46 +519,6 @@ void Rx_DSH_shutdown_status_Data(CAN_HandleTypeDef* hcan, DSH_shutdown_status_Ty
         .BMS_Ident = 0
      };
 #endif
-    
-#ifdef Tx_AMS_segment_state
-void Tx_AMS_segment_state_Data(CAN_HandleTypeDef* hcan, AMS_segment_state_TypeDef* AMS_segment_state_Data)
-{
-    //hcan->pTxMsg = &CanTxMsg; historic
-    TxHeader.StdId = ID_AMS_segment_state;
-    TxHeader.DLC = DLC_AMS_segment_state;
-    TxHeader.ExtId = 0x0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-        
-    TxData[0] = (uint8_t)((AMS_segment_state_Data->AMS_Mode)&0b11111111);
-    TxData[1] = (uint8_t)((AMS_segment_state_Data->AMS_Faults >> 8)&0b11111111);
-    TxData[2] = (uint8_t)((AMS_segment_state_Data->AMS_Faults)&0b1111111111111111);
-    TxData[3] = (uint8_t)((AMS_segment_state_Data->CellVolt_L)&0b11111111);
-    TxData[4] = (uint8_t)((AMS_segment_state_Data->CellVolt_H)&0b11111111);
-    TxData[5] = (uint8_t)((AMS_segment_state_Data->CellTemp_L)&0b11111111);
-    TxData[6] = (uint8_t)((AMS_segment_state_Data->CellTemp_H)&0b11111111);
-    TxData[7] = (uint8_t)((AMS_segment_state_Data->BMS_Ident)&0b11111111);
-                        
-   HAL_CAN_ActivateNotification(hcan,0xff);
-   HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
-}
-#endif
-#ifdef Rx_AMS_segment_state
-void Rx_AMS_segment_state_Data(CAN_HandleTypeDef* hcan, AMS_segment_state_TypeDef* AMS_segment_state_Data)
-{
-    AMS_segment_state_Data->AMS_Mode = (uint8_t)((RxData[0]&0b11111111));
-    AMS_segment_state_Data->AMS_Faults = (uint16_t)(((RxData[1]&0b11111111) << 8) | (RxData[2]&0b1111111111111111));
-    AMS_segment_state_Data->CellVolt_L = (uint8_t)((RxData[3]&0b11111111));
-    AMS_segment_state_Data->CellVolt_H = (uint8_t)((RxData[4]&0b11111111));
-    AMS_segment_state_Data->CellTemp_L = (uint8_t)((RxData[5]&0b11111111));
-    AMS_segment_state_Data->CellTemp_H = (uint8_t)((RxData[6]&0b11111111));
-    AMS_segment_state_Data->BMS_Ident = (uint8_t)((RxData[7]&0b11111111));
-
-    CAN_msgs_counter.MID_210++;
-}
-#endif
-
 
 #if defined(Tx_ACU_AMS_command) || defined(Rx_ACU_AMS_command)
     ACU_AMS_command_TypeDef ACU_AMS_command_Data = {
@@ -1457,4 +1219,21 @@ void HAL_CAN_RxCpltCallback(CAN_HandleTypeDef* hcan)
             break;
     }
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
+
+  static uint8_t blink;
+
+    if(!(blink%10))
+    {
+  		HAL_GPIO_TogglePin(CAN_RX_L_GPIO_Port, CAN_RX_L_Pin);
+    }
+
+    blink++;
+
 }
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
+{
+	HAL_CAN_RxCpltCallback(hcan);
+
+}
+

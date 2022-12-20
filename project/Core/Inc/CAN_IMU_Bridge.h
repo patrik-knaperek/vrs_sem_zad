@@ -360,166 +360,6 @@ typedef struct
 void Tx_FCU_steercont_data_Data(CAN_HandleTypeDef* hcan, FCU_steercont_data_TypeDef* FCU_steercont_data_Data);
 #endif
 
-//#define Tx_AMK_setpoints_FL 1
-#define Rx_AMK_setpoints_FL 1
-#define ID_AMK_setpoints_FL 0x184
-#define DLC_AMK_setpoints_FL 8
-/* AMK_setpoints_FL
- * 
- *
- * ID 0x184
- * Message size DLC: 8 bytes
- * Message is sent by node: 
- * Message contains:
- *                   rep start len type        comment
- * control          | A |  0 | 16 | uint16_t | 
- * target_velocity  | B | 16 | 16 |  int16_t | 
- * torque_positive_limit | C | 32 | 16 |  int16_t | 
- * torque_negative_limit | D | 48 | 16 |  int16_t | 
- */
-
-//             bit
-//     |7|6|5|4|3|2|1|0|
-//   |0|A|A|A|A|A|A|A|A|
-//   |1|A|A|A|A|A|A|A|A|
-// b |2|B|B|B|B|B|B|B|B|
-// y |3|B|B|B|B|B|B|B|B|
-// t |4|C|C|C|C|C|C|C|C|
-// e |5|C|C|C|C|C|C|C|C|
-//   |6|D|D|D|D|D|D|D|D|
-//   |7|D|D|D|D|D|D|D|D|
-typedef struct
-{
-    uint16_t control;
-    int16_t target_velocity;
-    int16_t torque_positive_limit;
-    int16_t torque_negative_limit;
-} AMK_setpoints_FL_TypeDef;
-
-#ifdef Tx_AMK_setpoints_FL
-void Tx_AMK_setpoints_FL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FL_TypeDef* AMK_setpoints_FL_Data);
-#endif
-
-//#define Tx_AMK_setpoints_FR 1
-#define Rx_AMK_setpoints_FR 1
-#define ID_AMK_setpoints_FR 0x185
-#define DLC_AMK_setpoints_FR 8
-/* AMK_setpoints_FR
- * 
- *
- * ID 0x185
- * Message size DLC: 8 bytes
- * Message is sent by node: 
- * Message contains:
- *                   rep start len type        comment
- * control          | A |  0 | 16 | uint16_t | control word
- * target_velocity  | B | 16 | 16 |  int16_t | 
- * torque_positive_limit | C | 32 | 16 |  int16_t | 
- * torque_negative_limit | D | 48 | 16 |  int16_t | 
- */
-
-//             bit
-//     |7|6|5|4|3|2|1|0|
-//   |0|A|A|A|A|A|A|A|A|
-//   |1|A|A|A|A|A|A|A|A|
-// b |2|B|B|B|B|B|B|B|B|
-// y |3|B|B|B|B|B|B|B|B|
-// t |4|C|C|C|C|C|C|C|C|
-// e |5|C|C|C|C|C|C|C|C|
-//   |6|D|D|D|D|D|D|D|D|
-//   |7|D|D|D|D|D|D|D|D|
-typedef struct
-{
-    uint16_t control;
-    int16_t target_velocity;
-    int16_t torque_positive_limit;
-    int16_t torque_negative_limit;
-} AMK_setpoints_FR_TypeDef;
-
-#ifdef Tx_AMK_setpoints_FR
-void Tx_AMK_setpoints_FR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_FR_TypeDef* AMK_setpoints_FR_Data);
-#endif
-
-//#define Tx_AMK_setpoints_RL 1
-#define Rx_AMK_setpoints_RL 1
-#define ID_AMK_setpoints_RL 0x188
-#define DLC_AMK_setpoints_RL 8
-/* AMK_setpoints_RL
- * 
- *
- * ID 0x188
- * Message size DLC: 8 bytes
- * Message is sent by node: 
- * Message contains:
- *                   rep start len type        comment
- * control          | A |  0 | 16 | uint16_t | 
- * target_velocity  | B | 16 | 16 |  int16_t | 
- * torque_positive_limit | C | 32 | 16 |  int16_t | 
- * torque_negative_limit | D | 48 | 16 |  int16_t | 
- */
-
-//             bit
-//     |7|6|5|4|3|2|1|0|
-//   |0|A|A|A|A|A|A|A|A|
-//   |1|A|A|A|A|A|A|A|A|
-// b |2|B|B|B|B|B|B|B|B|
-// y |3|B|B|B|B|B|B|B|B|
-// t |4|C|C|C|C|C|C|C|C|
-// e |5|C|C|C|C|C|C|C|C|
-//   |6|D|D|D|D|D|D|D|D|
-//   |7|D|D|D|D|D|D|D|D|
-typedef struct
-{
-    uint16_t control;
-    int16_t target_velocity;
-    int16_t torque_positive_limit;
-    int16_t torque_negative_limit;
-} AMK_setpoints_RL_TypeDef;
-
-#ifdef Tx_AMK_setpoints_RL
-void Tx_AMK_setpoints_RL_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RL_TypeDef* AMK_setpoints_RL_Data);
-#endif
-
-//#define Tx_AMK_setpoints_RR 1
-#define Rx_AMK_setpoints_RR 1
-#define ID_AMK_setpoints_RR 0x189
-#define DLC_AMK_setpoints_RR 8
-/* AMK_setpoints_RR
- * 
- *
- * ID 0x189
- * Message size DLC: 8 bytes
- * Message is sent by node: 
- * Message contains:
- *                   rep start len type        comment
- * control          | A |  0 | 16 | uint16_t | 
- * target_velocity  | B | 16 | 16 |  int16_t | 
- * torque_positive_limit | C | 32 | 16 |  int16_t | 
- * torque_negative_limit | D | 48 | 16 |  int16_t | 
- */
-
-//             bit
-//     |7|6|5|4|3|2|1|0|
-//   |0|A|A|A|A|A|A|A|A|
-//   |1|A|A|A|A|A|A|A|A|
-// b |2|B|B|B|B|B|B|B|B|
-// y |3|B|B|B|B|B|B|B|B|
-// t |4|C|C|C|C|C|C|C|C|
-// e |5|C|C|C|C|C|C|C|C|
-//   |6|D|D|D|D|D|D|D|D|
-//   |7|D|D|D|D|D|D|D|D|
-typedef struct
-{
-    uint16_t control;
-    int16_t target_velocity;
-    int16_t torque_positive_limit;
-    int16_t torque_negative_limit;
-} AMK_setpoints_RR_TypeDef;
-
-#ifdef Tx_AMK_setpoints_RR
-void Tx_AMK_setpoints_RR_Data(CAN_HandleTypeDef* hcan, AMK_setpoints_RR_TypeDef* AMK_setpoints_RR_Data);
-#endif
-
 //#define Tx_DSH_shutdown_status 1
 #define Rx_DSH_shutdown_status 1
 #define ID_DSH_shutdown_status 0x200
@@ -556,52 +396,6 @@ typedef struct
 
 #ifdef Tx_DSH_shutdown_status
 void Tx_DSH_shutdown_status_Data(CAN_HandleTypeDef* hcan, DSH_shutdown_status_TypeDef* DSH_shutdown_status_Data);
-#endif
-
-//#define Tx_AMS_segment_state 1
-#define Rx_AMS_segment_state 1
-#define ID_AMS_segment_state 0x210
-#define DLC_AMS_segment_state 8
-/* AMS_segment_state
- * 
- *
- * ID 0x210
- * Message size DLC: 8 bytes
- * Message is sent by node: 
- * Message contains:
- *                   rep start len type        comment
- * AMS_Mode         | A |  0 |  8 |  uint8_t | 
- * AMS_Faults       | B |  8 | 16 | uint16_t | 
- * CellVolt_L       | C | 24 |  8 |  uint8_t | 
- * CellVolt_H       | D | 32 |  8 |  uint8_t | 
- * CellTemp_L       | E | 40 |  8 |  uint8_t | 
- * CellTemp_H       | F | 48 |  8 |  uint8_t | 
- * BMS_Ident        | G | 56 |  8 |  uint8_t | 
- */
-
-//             bit
-//     |7|6|5|4|3|2|1|0|
-//   |0|A|A|A|A|A|A|A|A|
-//   |1|B|B|B|B|B|B|B|B|
-// b |2|B|B|B|B|B|B|B|B|
-// y |3|C|C|C|C|C|C|C|C|
-// t |4|D|D|D|D|D|D|D|D|
-// e |5|E|E|E|E|E|E|E|E|
-//   |6|F|F|F|F|F|F|F|F|
-//   |7|G|G|G|G|G|G|G|G|
-typedef struct
-{
-    uint8_t AMS_Mode;
-    uint16_t AMS_Faults;
-    uint8_t CellVolt_L;
-    uint8_t CellVolt_H;
-    uint8_t CellTemp_L;
-    uint8_t CellTemp_H;
-    uint8_t BMS_Ident;
-} AMS_segment_state_TypeDef;
-
-#ifdef Tx_AMS_segment_state
-void Tx_AMS_segment_state_Data(CAN_HandleTypeDef* hcan, AMS_segment_state_TypeDef* AMS_segment_state_Data);
 #endif
 
 //#define Tx_ACU_AMS_command 1
@@ -1070,19 +864,14 @@ void Tx_MCU_IMU_gps_speed_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_speed_TypeDe
 
 struct CAN_Msg_Count
 {
-	uint32_t MID_20;
-	uint32_t MID_60;
-	uint32_t MID_70;
-	uint32_t MID_90;
+	uint32_t MID_020;
+	uint32_t MID_060;
+	uint32_t MID_070;
+	uint32_t MID_090;
 	uint32_t MID_100;
 	uint32_t MID_120;
 	uint32_t MID_130;
-	uint32_t MID_184;
-	uint32_t MID_185;
-	uint32_t MID_188;
-	uint32_t MID_189;
 	uint32_t MID_200;
-	uint32_t MID_210;
 	uint32_t MID_220;
 	uint32_t MID_225;
 	uint32_t MID_230;

@@ -65,6 +65,7 @@ extern struct XDI_RateOfTurnDataType XDI_RateOfTurn;
 extern struct XDI_AccelerationDataType XDI_Acceleration;
 extern struct XDI_EulerAnglesDataType XDI_EulerAngles;
 extern struct XDI_VelocityDataType XDI_Velocity;
+extern struct XDI_GPSPositionDataType XDI_GPSPosition;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -227,11 +228,9 @@ void set_MCU_IMU_data(void)
 	MCU_IMU_euler_angles_Data.roll = XDI_EulerAngles.roll * 100;
 	MCU_IMU_euler_angles_Data.yaw = XDI_EulerAngles.yaw * 100;
 
-	//MCU_IMU_gps_position_Data.lat = XDI_GPSPosition.latitude;
-	MCU_IMU_gps_position_Data.lat = 10;
-	//MCU_IMU_gps_position_Data.longitude = XDI_GPSPosition.longitude;
-	//MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
-	MCU_IMU_gps_speed_Data.gps_velocity = 0;
+	MCU_IMU_gps_position_Data.lat = XDI_GPSPosition.latitude;
+	MCU_IMU_gps_position_Data.longitude = XDI_GPSPosition.longitude;
+	MCU_IMU_gps_speed_Data.gps_velocity = XDI_Velocity.velSum;
 
 	IMU_data_ready = 1;
 }
@@ -286,6 +285,7 @@ void USART_ReInit(void)
 
     HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);
 
+    HAL_Delay(1000);
     set_parameters = 0;
 	return;
 }
