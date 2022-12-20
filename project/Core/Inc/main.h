@@ -35,14 +35,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-struct CAN_Msg_Count
-{
-	uint32_t TxMID_260;
-	uint32_t TxMID_270;
-	uint32_t TxMID_280;
-	uint32_t TxMID_300;
-	uint32_t TxMID_305;
-};
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -61,7 +53,6 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 void set_MCU_IMU_data(void);
 uint8_t is_sgt_CAN_busy();
-void reset_CAN_msgs_counter(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

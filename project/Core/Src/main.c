@@ -26,8 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "CAN2022.h"
 #include "xsense.h"
+#include "CAN_IMU_Bridge.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,8 +54,6 @@ CAN_FilterTypeDef sFilterConfig;
 uint8_t sgt_CAN_busy = 0;
 uint8_t IMU_data_ready = 0;
 uint8_t set_parameters = 0;
-struct CAN_Msg_Count CAN_msgs_counter;
-struct CAN_Msg_Count CAN_msgs_sampler;
 
 extern CAN_HandleTypeDef hcan1;
 extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
@@ -245,16 +243,11 @@ void send_sgt_CAN(void)
 	sgt_CAN_busy = 1;
 
 	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
-	CAN_msgs_counter.TxMID_260++;
 	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
-	CAN_msgs_counter.TxMID_270++;
 	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
-	CAN_msgs_counter.TxMID_280++;
 	HAL_Delay(0.1);
 	Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
-	CAN_msgs_counter.TxMID_300++;
 	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
-	CAN_msgs_counter.TxMID_305++;
 
 	IMU_data_ready = 0;
 	sgt_CAN_busy = 0;
@@ -281,57 +274,20 @@ void USART_ReInit(void)
     HAL_UART_Abort_IT(&huart2);
     __HAL_UART_DISABLE_IT(&huart2, UART_IT_IDLE);
 
-    //HAL_Delay(1000);
-    //set_parameters = 2;
-
     HAL_UART_DeInit(&huart2);
-
-    //HAL_Delay(1000);
-    //set_parameters = 3;
-
 
     if (HAL_UART_Init(&huart2) != HAL_OK) {
         Error_Handler();
     }
 
-    //HAL_Delay(1000);
-    //set_parameters = 4;
-
     __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
-
-    //HAL_Delay(1000);
-    //set_parameters = 5;
 
     __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 
-    //HAL_Delay(1000);
-    //set_parameters = 6;
+    HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);
 
-     HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);
-
-    //HAL_Delay(1000);
-	set_parameters = 0;
+    set_parameters = 0;
 	return;
-}
-
-void reset_CAN_msgs_counter()
-{
-	CAN_msgs_sampler.TxMID_260 = CAN_msgs_counter.TxMID_260;
-	CAN_msgs_counter.TxMID_260 = 0;
-
-	CAN_msgs_sampler.TxMID_270 = CAN_msgs_counter.TxMID_270;
-	CAN_msgs_counter.TxMID_270 = 0;
-
-	CAN_msgs_sampler.TxMID_280 = CAN_msgs_counter.TxMID_280;
-	CAN_msgs_counter.TxMID_280 = 0;
-
-	CAN_msgs_sampler.TxMID_300 = CAN_msgs_counter.TxMID_300;
-	CAN_msgs_counter.TxMID_300 = 0;
-
-	CAN_msgs_sampler.TxMID_305 = CAN_msgs_counter.TxMID_305;
-	CAN_msgs_counter.TxMID_305 = 0;
-
-
 }
 
 /** NVIC Configuration

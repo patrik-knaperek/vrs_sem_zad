@@ -3,7 +3,7 @@
 #include "stm32f1xx_hal.h"
 #include "xsense.h"
 #include "main.h"
-#include "CAN2022.h"
+#include "CAN_IMU_Bridge.h"
 #include "math.h"
 
 //void send_sgt_CAN(void);
