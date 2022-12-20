@@ -37,11 +37,11 @@ extern "C" {
 /* USER CODE BEGIN ET */
 struct CAN_Msg_Count
 {
-	uint32_t TxMsgId_0x260;
-	uint32_t TxMsgId_0x270;
-	uint32_t TxMsgId_0x280;
-	uint32_t TxMsgId_0x300;
-	uint32_t TxMsgId_0x305;
+	uint32_t TxMID_260;
+	uint32_t TxMID_270;
+	uint32_t TxMID_280;
+	uint32_t TxMID_300;
+	uint32_t TxMID_305;
 };
 /* USER CODE END ET */
 

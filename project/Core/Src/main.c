@@ -142,6 +142,7 @@ int main(void)
   __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT); 						// disable half complete interrupt
   HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);	// start receiving data
 
+  HAL_TIM_Base_Start_IT(&htim6);
   //HAL_TIM_Base_MspInit(&htim6);
   /* USER CODE END 2 */
 
@@ -244,16 +245,16 @@ void send_sgt_CAN(void)
 	sgt_CAN_busy = 1;
 
 	Tx_MCU_IMU_angular_velocity_Data(&hcan1, &MCU_IMU_angular_velocity_Data);
-	CAN_msgs_counter.TxMsgId_0x260++;
+	CAN_msgs_counter.TxMID_260++;
 	Tx_MCU_IMU_acceleration_Data(&hcan1, &MCU_IMU_acceleration_Data);
-	CAN_msgs_counter.TxMsgId_0x270++;
+	CAN_msgs_counter.TxMID_270++;
 	Tx_MCU_IMU_euler_angles_Data(&hcan1, &MCU_IMU_euler_angles_Data);
-	CAN_msgs_counter.TxMsgId_0x280++;
+	CAN_msgs_counter.TxMID_280++;
 	HAL_Delay(0.1);
 	Tx_MCU_IMU_gps_position_Data(&hcan1, &MCU_IMU_gps_position_Data);
-	CAN_msgs_counter.TxMsgId_0x300++;
+	CAN_msgs_counter.TxMID_300++;
 	Tx_MCU_IMU_gps_speed_Data(&hcan1, &MCU_IMU_gps_speed_Data);
-	CAN_msgs_counter.TxMsgId_0x305++;
+	CAN_msgs_counter.TxMID_305++;
 
 	IMU_data_ready = 0;
 	sgt_CAN_busy = 0;
@@ -315,20 +316,20 @@ void USART_ReInit(void)
 
 void reset_CAN_msgs_counter()
 {
-	CAN_msgs_sampler.TxMsgId_0x260 = CAN_msgs_counter.TxMsgId_0x260;
-	CAN_msgs_counter.TxMsgId_0x260 = 0;
+	CAN_msgs_sampler.TxMID_260 = CAN_msgs_counter.TxMID_260;
+	CAN_msgs_counter.TxMID_260 = 0;
 
-	CAN_msgs_sampler.TxMsgId_0x270 = CAN_msgs_counter.TxMsgId_0x260;
-	CAN_msgs_counter.TxMsgId_0x260 = 0;
+	CAN_msgs_sampler.TxMID_270 = CAN_msgs_counter.TxMID_270;
+	CAN_msgs_counter.TxMID_270 = 0;
 
-	CAN_msgs_sampler.TxMsgId_0x280 = CAN_msgs_counter.TxMsgId_0x260;
-	CAN_msgs_counter.TxMsgId_0x260 = 0;
+	CAN_msgs_sampler.TxMID_280 = CAN_msgs_counter.TxMID_280;
+	CAN_msgs_counter.TxMID_280 = 0;
 
-	CAN_msgs_sampler.TxMsgId_0x300 = CAN_msgs_counter.TxMsgId_0x260;
-	CAN_msgs_counter.TxMsgId_0x260 = 0;
+	CAN_msgs_sampler.TxMID_300 = CAN_msgs_counter.TxMID_300;
+	CAN_msgs_counter.TxMID_300 = 0;
 
-	CAN_msgs_sampler.TxMsgId_0x305 = CAN_msgs_counter.TxMsgId_0x260;
-	CAN_msgs_counter.TxMsgId_0x260 = 0;
+	CAN_msgs_sampler.TxMID_305 = CAN_msgs_counter.TxMID_305;
+	CAN_msgs_counter.TxMID_305 = 0;
 
 
 }

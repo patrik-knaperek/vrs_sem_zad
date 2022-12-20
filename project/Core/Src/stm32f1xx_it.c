@@ -224,7 +224,6 @@ void CAN1_TX_IRQHandler(void)
 
   /* USER CODE END CAN1_TX_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
-  reset_CAN_msgs_counter();
   /* USER CODE BEGIN CAN1_TX_IRQn 1 */
 
   /* USER CODE END CAN1_TX_IRQn 1 */
@@ -307,7 +306,7 @@ void TIM6_IRQHandler(void)
   /* USER CODE END TIM6_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);
   /* USER CODE BEGIN TIM6_IRQn 1 */
-
+  reset_CAN_msgs_counter();
   /* USER CODE END TIM6_IRQn 1 */
 }
 
