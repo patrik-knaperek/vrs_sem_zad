@@ -52,6 +52,7 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 CAN_FilterTypeDef sFilterConfig;
 uint8_t sgt_CAN_busy = 0;
 uint8_t IMU_data_ready = 0;
+uint8_t set_parameters = 0;
 
 extern CAN_HandleTypeDef hcan1;
 extern MCU_IMU_angular_velocity_TypeDef MCU_IMU_angular_velocity_Data;
@@ -69,6 +70,7 @@ extern struct XDI_VelocityDataType XDI_Velocity;
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void send_sgt_CAN(void);
+void USART_ReInit(void);
 static void MX_NVIC_Init(void);
 /* USER CODE END PFP */
 
@@ -146,6 +148,11 @@ int main(void)
 	  if(IMU_data_ready)
 	  {
 		  send_sgt_CAN();
+	  }
+
+	  if(set_parameters)
+	  {
+		  USART_ReInit();
 	  }
     /* USER CODE END WHILE */
 
@@ -257,6 +264,44 @@ void send_sgt_CAN(void)
 uint8_t is_sgt_CAN_busy()
 {
 	return sgt_CAN_busy;
+}
+
+void USART_ReInit(void)
+{
+    HAL_UART_Abort_IT(&huart2);
+    __HAL_UART_DISABLE_IT(&huart2, UART_IT_IDLE);
+
+    //HAL_Delay(1000);
+    //set_parameters = 2;
+
+    HAL_UART_DeInit(&huart2);
+
+    //HAL_Delay(1000);
+    //set_parameters = 3;
+
+
+    if (HAL_UART_Init(&huart2) != HAL_OK) {
+        Error_Handler();
+    }
+
+    //HAL_Delay(1000);
+    //set_parameters = 4;
+
+    __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);
+
+    //HAL_Delay(1000);
+    //set_parameters = 5;
+
+    __HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
+
+    //HAL_Delay(1000);
+    //set_parameters = 6;
+
+     HAL_UART_Receive_DMA(&huart2, XSENSE_rx_buffer, XSENSE_rx_buffer_size);
+
+    //HAL_Delay(1000);
+	set_parameters = 0;
+	return;
 }
 
 /** NVIC Configuration
