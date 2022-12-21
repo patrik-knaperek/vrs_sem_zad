@@ -1,3 +1,11 @@
+/******************************************************************************
+* @file    xsense.h
+* @author  Patrik Knaperek
+* @version V0.2.0
+* @date    20-December-2022
+* @brief   XSENSE Mti-710 UART protocol application / data parse
+******************************************************************************/
+
 /* Define section ------------------------------------------------------------*/
 
 #define XSENSE_rx_buffer_size	64
