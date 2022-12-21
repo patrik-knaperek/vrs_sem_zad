@@ -129,7 +129,7 @@ void Tx_INT_control_data_Data(CAN_HandleTypeDef* hcan, INT_control_data_TypeDef*
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
+
 }
 #endif
 #ifdef Rx_INT_control_data
@@ -147,6 +147,7 @@ void Rx_INT_control_data_Data(CAN_HandleTypeDef* hcan, INT_control_data_TypeDef*
     INT_control_data_Data->susp_RL = (uint16_t)(((RxData[3]&0b11111) << 7) | ((RxData[4]&0b1111111111111) >> 1));
     INT_control_data_Data->reserved = (uint8_t)(((RxData[4]&0b1) << 7) | ((RxData[5]&0b111111111) >> 1));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_020++;
 }
 #endif
@@ -202,7 +203,7 @@ void Tx_ACU_control_status_Data(CAN_HandleTypeDef* hcan, ACU_control_status_Type
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
+
 }
 #endif
 #ifdef Rx_ACU_control_status
@@ -224,6 +225,7 @@ void Rx_ACU_control_status_Data(CAN_HandleTypeDef* hcan, ACU_control_status_Type
     ACU_control_status_Data->IMD_RES = (uint16_t)(((RxData[1]&0b111) << 13) | ((RxData[2]&0b11111111111) << 5) | ((RxData[3]&0b1111111111111111111) >> 3));
     ACU_control_status_Data->IMD_ERROR = (uint8_t)((RxData[3]&0b111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_060++;
 }
 #endif
@@ -256,7 +258,6 @@ void Tx_ACU_TSBox_data_Data(CAN_HandleTypeDef* hcan, ACU_TSBox_data_TypeDef* ACU
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_ACU_TSBox_data
@@ -266,6 +267,7 @@ void Rx_ACU_TSBox_data_Data(CAN_HandleTypeDef* hcan, ACU_TSBox_data_TypeDef* ACU
     ACU_TSBox_data_Data->current = (int16_t)(((RxData[2]&0b11111111) << 8) | (RxData[3]&0b1111111111111111));
     ACU_TSBox_data_Data->voltage = (int16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_070++;
 }
 #endif
@@ -305,7 +307,6 @@ void Tx_AMS_acuseg_voltage_Data(CAN_HandleTypeDef* hcan, AMS_acuseg_voltage_Type
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_AMS_acuseg_voltage
@@ -320,6 +321,7 @@ void Rx_AMS_acuseg_voltage_Data(CAN_HandleTypeDef* hcan, AMS_acuseg_voltage_Type
     AMS_acuseg_voltage_Data->voltage6 = (uint8_t)((RxData[6]&0b11111111));
     AMS_acuseg_voltage_Data->voltage7 = (uint8_t)((RxData[7]&0b11111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_090++;
 }
 #endif
@@ -359,7 +361,6 @@ void Tx_AMS_acuseg_temp_Data(CAN_HandleTypeDef* hcan, AMS_acuseg_temp_TypeDef* A
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_AMS_acuseg_temp
@@ -374,6 +375,7 @@ void Rx_AMS_acuseg_temp_Data(CAN_HandleTypeDef* hcan, AMS_acuseg_temp_TypeDef* A
     AMS_acuseg_temp_Data->temp6 = (uint8_t)((RxData[6]&0b11111111));
     AMS_acuseg_temp_Data->temp7 = (uint8_t)((RxData[7]&0b11111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_100++;
 }
 #endif
@@ -405,7 +407,6 @@ void Tx_FCU_pedal_data_Data(CAN_HandleTypeDef* hcan, FCU_pedal_data_TypeDef* FCU
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_FCU_pedal_data
@@ -416,6 +417,7 @@ void Rx_FCU_pedal_data_Data(CAN_HandleTypeDef* hcan, FCU_pedal_data_TypeDef* FCU
     FCU_pedal_data_Data->brake1 = (uint8_t)((RxData[2]&0b11111111));
     FCU_pedal_data_Data->brake2 = (uint8_t)((RxData[3]&0b11111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_120++;
 }
 #endif
@@ -451,7 +453,6 @@ void Tx_FCU_steercont_data_Data(CAN_HandleTypeDef* hcan, FCU_steercont_data_Type
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_FCU_steercont_data
@@ -464,6 +465,7 @@ void Rx_FCU_steercont_data_Data(CAN_HandleTypeDef* hcan, FCU_steercont_data_Type
     FCU_steercont_data_Data->SHDB = (uint8_t)(((RxData[2]&0b111111) >> 5));
     FCU_steercont_data_Data->INERTIA_SW = (uint8_t)(((RxData[2]&0b11111) >> 4));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_130++;
 }
 #endif
@@ -493,7 +495,6 @@ void Tx_DSH_shutdown_status_Data(CAN_HandleTypeDef* hcan, DSH_shutdown_status_Ty
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_DSH_shutdown_status
@@ -503,6 +504,7 @@ void Rx_DSH_shutdown_status_Data(CAN_HandleTypeDef* hcan, DSH_shutdown_status_Ty
     DSH_shutdown_status_Data->SHDB = (uint8_t)(((RxData[0]&0b1111111) >> 6));
     DSH_shutdown_status_Data->INERTIA_SW = (uint8_t)(((RxData[0]&0b111111) >> 5));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_200++;
 }
 #endif
@@ -543,7 +545,6 @@ void Tx_ACU_AMS_command_Data(CAN_HandleTypeDef* hcan, ACU_AMS_command_TypeDef* A
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_ACU_AMS_command
@@ -552,6 +553,7 @@ void Rx_ACU_AMS_command_Data(CAN_HandleTypeDef* hcan, ACU_AMS_command_TypeDef* A
     ACU_AMS_command_Data->meas_state = (uint8_t)((RxData[0]&0b11111111));
     ACU_AMS_command_Data->flags = (uint16_t)(((RxData[1]&0b11111111) << 8) | (RxData[2]&0b1111111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_220++;
 }
 #endif
@@ -582,7 +584,6 @@ void Tx_FCU_sensor_error_Data(CAN_HandleTypeDef* hcan, FCU_sensor_error_TypeDef*
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_FCU_sensor_error
@@ -591,6 +592,7 @@ void Rx_FCU_sensor_error_Data(CAN_HandleTypeDef* hcan, FCU_sensor_error_TypeDef*
     FCU_sensor_error_Data->error = (uint8_t)((RxData[0]&0b11111111));
     FCU_sensor_error_Data->dummy = (uint32_t)(((RxData[1]&0b11111111) << 24) | ((RxData[2]&0b1111111111111111) << 16) | ((RxData[3]&0b111111111111111111111111) << 8) | (RxData[4]&0b11111111111111111111111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_225++;
 }
 #endif
@@ -626,7 +628,6 @@ void Tx_DSH_oil_temp_Data(CAN_HandleTypeDef* hcan, DSH_oil_temp_TypeDef* DSH_oil
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_DSH_oil_temp
@@ -637,6 +638,7 @@ void Rx_DSH_oil_temp_Data(CAN_HandleTypeDef* hcan, DSH_oil_temp_TypeDef* DSH_oil
     DSH_oil_temp_Data->RL_temp = (uint16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
     DSH_oil_temp_Data->RR_temp = (uint16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_230++;
 }
 #endif
@@ -672,7 +674,6 @@ void Tx_DSH_suspension_sensors_raw_Data(CAN_HandleTypeDef* hcan, DSH_suspension_
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_DSH_suspension_sensors_raw
@@ -683,6 +684,7 @@ void Rx_DSH_suspension_sensors_raw_Data(CAN_HandleTypeDef* hcan, DSH_suspension_
     DSH_suspension_sensors_raw_Data->RA = (uint16_t)(((RxData[4]&0b11111111) << 8) | (RxData[5]&0b1111111111111111));
     DSH_suspension_sensors_raw_Data->RB = (uint16_t)(((RxData[6]&0b11111111) << 8) | (RxData[7]&0b1111111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_250++;
 }
 #endif
@@ -722,7 +724,6 @@ void Tx_INT_coolant_temp_Data(CAN_HandleTypeDef* hcan, INT_coolant_temp_TypeDef*
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_INT_coolant_temp
@@ -737,6 +738,7 @@ void Rx_INT_coolant_temp_Data(CAN_HandleTypeDef* hcan, INT_coolant_temp_TypeDef*
     INT_coolant_temp_Data->Temp_R3 = (uint8_t)((RxData[6]&0b11111111));
     INT_coolant_temp_Data->Temp_R4 = (uint8_t)((RxData[7]&0b11111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_255++;
 }
 #endif
@@ -772,7 +774,6 @@ void Tx_INT_coolant_temp_left_raw_Data(CAN_HandleTypeDef* hcan, INT_coolant_temp
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_INT_coolant_temp_left_raw
@@ -783,6 +784,7 @@ void Rx_INT_coolant_temp_left_raw_Data(CAN_HandleTypeDef* hcan, INT_coolant_temp
     INT_coolant_temp_left_raw_Data->Temp_L3_raw = (uint16_t)(((RxData[3]&0b11111111) << 4) | ((RxData[4]&0b1111111111111111) >> 4));
     INT_coolant_temp_left_raw_Data->Temp_L4_raw = (uint16_t)(((RxData[4]&0b1111) << 8) | (RxData[5]&0b111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_256++;
 }
 #endif
@@ -818,7 +820,6 @@ void Tx_INT_coolant_temp_right_raw_Data(CAN_HandleTypeDef* hcan, INT_coolant_tem
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 #ifdef Rx_INT_coolant_temp_right_raw
@@ -829,6 +830,7 @@ void Rx_INT_coolant_temp_right_raw_Data(CAN_HandleTypeDef* hcan, INT_coolant_tem
     INT_coolant_temp_right_raw_Data->Temp_R3_raw = (uint16_t)(((RxData[3]&0b11111111) << 4) | ((RxData[4]&0b1111111111111111) >> 4));
     INT_coolant_temp_right_raw_Data->Temp_R4_raw = (uint16_t)(((RxData[4]&0b1111) << 8) | (RxData[5]&0b111111111111));
 
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
     CAN_msgs_counter.MID_257++;
 }
 #endif
@@ -864,7 +866,6 @@ void Tx_MCU_IMU_angular_velocity_Data(CAN_HandleTypeDef* hcan, MCU_IMU_angular_v
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 
    CAN_msgs_counter.MID_260++;
 }
@@ -875,6 +876,8 @@ void Rx_MCU_IMU_angular_velocity_Data(CAN_HandleTypeDef* hcan, MCU_IMU_angular_v
     MCU_IMU_angular_velocity_Data->gyrX = (int32_t)(((RxData[0]&0b11111111) << 12) | ((RxData[1]&0b1111111111111111) << 4) | ((RxData[2]&0b111111111111111111111111) >> 4));
     MCU_IMU_angular_velocity_Data->gyrY = (int32_t)(((RxData[2]&0b1111) << 16) | ((RxData[3]&0b111111111111) << 8) | (RxData[4]&0b11111111111111111111));
     MCU_IMU_angular_velocity_Data->gyrZ = (int32_t)(((RxData[5]&0b11111111) << 12) | ((RxData[6]&0b1111111111111111) << 4) | ((RxData[7]&0b111111111111111111111111) >> 4));
+
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 
@@ -909,7 +912,6 @@ void Tx_MCU_IMU_acceleration_Data(CAN_HandleTypeDef* hcan, MCU_IMU_acceleration_
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 
    CAN_msgs_counter.MID_270++;
 }
@@ -920,6 +922,8 @@ void Rx_MCU_IMU_acceleration_Data(CAN_HandleTypeDef* hcan, MCU_IMU_acceleration_
     MCU_IMU_acceleration_Data->accX = (int32_t)(((RxData[0]&0b11111111) << 12) | ((RxData[1]&0b1111111111111111) << 4) | ((RxData[2]&0b111111111111111111111111) >> 4));
     MCU_IMU_acceleration_Data->accY = (int32_t)(((RxData[2]&0b1111) << 16) | ((RxData[3]&0b111111111111) << 8) | (RxData[4]&0b11111111111111111111));
     MCU_IMU_acceleration_Data->accZ = (int32_t)(((RxData[5]&0b11111111) << 12) | ((RxData[6]&0b1111111111111111) << 4) | ((RxData[7]&0b111111111111111111111111) >> 4));
+
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 
@@ -954,7 +958,6 @@ void Tx_MCU_IMU_euler_angles_Data(CAN_HandleTypeDef* hcan, MCU_IMU_euler_angles_
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 
    CAN_msgs_counter.MID_280++;
 }
@@ -965,6 +968,8 @@ void Rx_MCU_IMU_euler_angles_Data(CAN_HandleTypeDef* hcan, MCU_IMU_euler_angles_
     MCU_IMU_euler_angles_Data->roll = (int32_t)(((RxData[0]&0b11111111) << 12) | ((RxData[1]&0b1111111111111111) << 4) | ((RxData[2]&0b111111111111111111111111) >> 4));
     MCU_IMU_euler_angles_Data->pitch = (int32_t)(((RxData[2]&0b1111) << 16) | ((RxData[3]&0b111111111111) << 8) | (RxData[4]&0b11111111111111111111));
     MCU_IMU_euler_angles_Data->yaw = (int32_t)(((RxData[5]&0b11111111) << 12) | ((RxData[6]&0b1111111111111111) << 4) | ((RxData[7]&0b111111111111111111111111) >> 4));
+
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 
@@ -997,7 +1002,6 @@ void Tx_MCU_IMU_gps_position_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_position_
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 
    CAN_msgs_counter.MID_300++;
 }
@@ -1007,6 +1011,8 @@ void Rx_MCU_IMU_gps_position_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_position_
 {
     MCU_IMU_gps_position_Data->lat = (uint32_t)(((RxData[0]&0b11111111) << 24) | ((RxData[1]&0b1111111111111111) << 16) | ((RxData[2]&0b111111111111111111111111) << 8) | (RxData[3]&0b11111111111111111111111111111111));
     MCU_IMU_gps_position_Data->longitude = (uint32_t)(((RxData[4]&0b11111111) << 24) | ((RxData[5]&0b1111111111111111) << 16) | ((RxData[6]&0b111111111111111111111111) << 8) | (RxData[7]&0b11111111111111111111111111111111));
+
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 
@@ -1032,7 +1038,6 @@ void Tx_MCU_IMU_gps_speed_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_speed_TypeDe
                         
    HAL_CAN_ActivateNotification(hcan,0xff);
    HAL_CAN_AddTxMessage(hcan, &TxHeader, TxData, &TxMailbox);
-   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 
    CAN_msgs_counter.MID_305++;
 }
@@ -1041,6 +1046,8 @@ void Tx_MCU_IMU_gps_speed_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_speed_TypeDe
 void Rx_MCU_IMU_gps_speed_Data(CAN_HandleTypeDef* hcan, MCU_IMU_gps_speed_TypeDef* MCU_IMU_gps_speed_Data)
 {
     MCU_IMU_gps_speed_Data->gps_velocity = (uint16_t)(((RxData[0]&0b11111111) << 8) | (RxData[1]&0b1111111111111111));
+
+    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData);
 }
 #endif
 
